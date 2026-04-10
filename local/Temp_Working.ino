@@ -1,10 +1,9 @@
 #include <HardwareSerial.h>
 #include <ModbusMaster.h>
 
-#define RXD2 3
-#define TXD2 1
-#define MAX485_DE 33
-#define MAX485_RE 33
+#define RX_PIN 3
+#define TX_PIN 1
+#define MAX485 33
 
 HardwareSerial RS485Serial(0); // UART0
 ModbusMaster node;
@@ -24,19 +23,19 @@ uint16_t forceChargePower;
 uint16_t forceDisChargePower;
 
 void preTransmission() {
-  digitalWrite(MAX485_DE, HIGH);
+  digitalWrite(MAX485_MODE_PIN, HIGH);
 }
 
 void postTransmission() {
-  digitalWrite(MAX485_DE, LOW);
+  digitalWrite(MAX485_MODE_PIN, LOW);
 }
 
 void setup() {
   Serial.begin(115200);
-  pinMode(MAX485_DE, OUTPUT);
-  digitalWrite(MAX485_DE, LOW);
+  pinMode(MAX485_MODE_PIN, OUTPUT);
+  digitalWrite(MAX485_MODE_PIN, LOW);
   // 👇 Echte hardware UART initialiseren
-  RS485Serial.begin(115200, SERIAL_8N1, RXD2, TXD2);
+  RS485Serial.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
   node.begin(1, RS485Serial); // slave ID = 1
   node.preTransmission(preTransmission);
   node.postTransmission(postTransmission);

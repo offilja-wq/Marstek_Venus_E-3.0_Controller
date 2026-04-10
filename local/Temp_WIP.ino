@@ -7,9 +7,9 @@
 #include <ModbusMaster.h>
 #include <ArduinoJson.h>
 
-#define RXD2 3
-#define TXD2 1
-#define MAX485_DE 33
+#define RX_PIN 3
+#define TX_PIN 1
+#define MAX485_MODE_PIN 33
 #define MAX485_RE 33
 // End marstek
 
@@ -57,10 +57,10 @@ void setup() {
   // Serial.println("Na setup wifi");
 
   // Marstek
-  pinMode(MAX485_DE, OUTPUT);
-  digitalWrite(MAX485_DE, LOW);
+  pinMode(MAX485_MODE_PIN, OUTPUT);
+  digitalWrite(MAX485_MODE_PIN, LOW);
   // 👇 Echte hardware UART initialiseren
-  RS485Serial.begin(115200, SERIAL_8N1, RXD2, TXD2);
+  RS485Serial.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
   node.begin(1, RS485Serial); // slave ID = 1
   node.preTransmission(preTransmission);
   node.postTransmission(postTransmission);
@@ -112,11 +112,11 @@ void loop() {
 
 void preTransmission() {
   delay(10);
-  digitalWrite(MAX485_DE, HIGH);
+  digitalWrite(MAX485_MODE_PIN, HIGH);
 }
 void postTransmission() {
   delay(10);
-  digitalWrite(MAX485_DE, LOW);
+  digitalWrite(MAX485_MODE_PIN, LOW);
 }
 
 void readBatteryData() {
