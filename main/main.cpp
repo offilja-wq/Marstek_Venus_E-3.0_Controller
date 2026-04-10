@@ -21,10 +21,10 @@ uint16_t DisChargeCurrentLimit;
 uint16_t forceChargePower;
 uint16_t forceDisChargePower;
 
-void readBatteryData() {
-  
+void getMarstekData(uint32_t code)
+{
   uint32_t result;
-  result = node.readHoldingRegisters(30006, 1);
+  result = node.readHoldingRegisters(code, 1);
   
   if (result == node.ku8MBSuccess)
   {
@@ -37,21 +37,29 @@ void readBatteryData() {
 
 }
 
-void setup() {
-  Serial.begin(115200);
+void marstekBegin()
+{
   pinMode(MAX485_MODE_PIN, OUTPUT);
   digitalWrite(MAX485_MODE_PIN, LOW);
-  // 👇 Echte hardware UART initialiseren
+
   RS485Serial.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
   node.begin(1, RS485Serial); // slave ID = 1
   node.preTransmission(startTransmission);
   node.postTransmission(endTransmission);
-  Serial.println("Start uitlezen Marstek via RS485...");
+
+  setRS485Mode(RECEIVER);
 }
 
-void loop() {
+void setup()
+{
+  Serial.begin(115200);
+  marstekBegin();
 
-  readBatteryData();
+}
+
+void loop()
+{
+  getMarstekData(30006);
 
   Serial.print("Battery Power AC (W) : ");
   Serial.println(currentBatteryPowerAC);
