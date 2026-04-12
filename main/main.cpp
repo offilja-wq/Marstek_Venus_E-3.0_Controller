@@ -2,45 +2,33 @@
 
 #include "config.h"
 #include "iungo.h"
-#include "marstek.h"
+#include "MAX485.h"
 
 HardwareSerial RS485Serial(0); // UART0
 ModbusMaster node;
 
-uint16_t batteryPercentage;
-uint16_t batterySOCKwh;
-uint16_t currentBatteryPower;
-int16_t currentBatteryPowerAC;
-uint16_t noCycles;
-uint16_t  controlStatus;
-uint16_t forceChargeStatus;
-uint16_t currentBatteryState;
-int16_t currentBatteryPower_sign;
-uint16_t ChargeCurrentLimit;
-uint16_t DisChargeCurrentLimit;
-uint16_t forceChargePower;
-uint16_t forceDisChargePower;
+void setMarstekData(TRANSMIT_CODE)
+{
 
-void getMarstekData(uint32_t code)
+}
+
+int32_t getMarstekData(RECEIVE_CODE code)
 {
   uint32_t result;
   result = node.readHoldingRegisters(code, 1);
   
   if (result == node.ku8MBSuccess)
-  {
-    currentBatteryPowerAC = (int16_t)node.getResponseBuffer(0);
-  }
-  else
-  {
-    Serial.println("Fout bij lezen 1");
-  }  
+    return (int16_t)node.getResponseBuffer(0);
+}
 
+void handleMarstek()
+{
+  int32_t temp = getMarstekData(batteryPowerAC);
 }
 
 void marstekBegin()
 {
   pinMode(MAX485_MODE_PIN, OUTPUT);
-  digitalWrite(MAX485_MODE_PIN, LOW);
 
   RS485Serial.begin(115200, SERIAL_8N1, RX_PIN, TX_PIN);
   node.begin(1, RS485Serial); // slave ID = 1
@@ -53,17 +41,17 @@ void marstekBegin()
 void setup()
 {
   Serial.begin(115200);
-  marstekBegin();
 
+  marstekBegin();
+  iungoBegin();
 }
 
 void loop()
 {
-  getMarstekData(30006);
+  // handleMarstek();
 
-  Serial.print("Battery Power AC (W) : ");
-  Serial.println(currentBatteryPowerAC);
-  Serial.println("-------------------");
+  Serial.print("Power Inungo: ");
+  Serial.println(getIungoPower());
 
   delay(300);
 }

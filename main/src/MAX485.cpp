@@ -1,17 +1,17 @@
 #include <Arduino.h>
 
 #include "config.h"
-#include "marstek.h"
+#include "MAX485.h"
 
-// HardwareSerial RS485Serial(0); // UART0
-// ModbusMaster node;
-
-MODE marstekLiveState;
+MODE marstekLastState;
 
 void setRS485Mode(MODE state)
 {
+    if(marstekLastState == state)
+        return;
+
     digitalWrite(MAX485_MODE_PIN, state);
-    marstekLiveState = state;
+    marstekLastState = state;
 }
 
 void startTransmission()
