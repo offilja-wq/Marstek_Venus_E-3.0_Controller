@@ -9,14 +9,13 @@ ModbusMaster node;
 
 void setMarstekData(TRANSMIT_CODE)
 {
-
 }
 
 int32_t getMarstekData(RECEIVE_CODE code)
 {
   uint32_t result;
   result = node.readHoldingRegisters(code, 1);
-  
+
   if (result == node.ku8MBSuccess)
     return (int16_t)node.getResponseBuffer(0);
 }

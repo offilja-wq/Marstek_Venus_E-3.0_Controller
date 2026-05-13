@@ -7,7 +7,7 @@ MODE marstekLastState;
 
 void setRS485Mode(MODE state)
 {
-    if(marstekLastState == state)
+    if (marstekLastState == state)
         return;
 
     digitalWrite(MAX485_MODE_PIN, state);

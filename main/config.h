@@ -29,5 +29,5 @@ typedef enum : uint16_t
 
 typedef enum : uint16_t
 {
-    
+
 } TRANSMIT_CODE;
